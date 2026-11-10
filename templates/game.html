@@ -433,7 +433,7 @@ ACTIVE SHAPE: {{ {"CIRCLE":"●","TRIANGLE":"▲","CROSS":"✚","SQUARE":"■"}[
       if (button && button.name) data.append(button.name, button.value);
 
       if (action === "/game/draw") {
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 0));
       }
 
       const result = await sendGameRequest(action, data);
