@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PLAYWHOT | Dashboard</title>
+<link rel="stylesheet" href="/static/style.css">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse at top, #075238, #03140f 65%);
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+.dash-container {
+    width: 100%;
+    max-width: 480px;
+    margin: auto;
+    padding: 22px 17px 40px;
+}
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.dash-logo {
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: white;
+    text-shadow: 0 0 15px #00ff99;
+}
+
+.dash-logo span {
+    color: #16f5a0;
+}
+
+.dash-tag {
+    font-size: 11px;
+    color: #18e99b;
+    border: 1px solid #12a96f;
+    padding: 7px 10px;
+    border-radius: 20px;
+}
+
+.welcome-text {
+    margin-bottom: 20px;
+}
+
+.welcome-text small {
+    color: #19e99b;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.welcome-text h2 {
+    font-size: 25px;
+    margin: 9px 0;
+}
+
+.welcome-text p {
+    color: #a9c8bb;
+    font-size: 14px;
+}
+
+.wallet-card {
+    padding: 25px 20px;
+    border: 1px solid #1af5a0;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #07583d, #06251c);
+    box-shadow: 0 0 25px rgba(0,255,153,.18);
+    margin-bottom: 25px;
+}
+
+.wallet-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #c4e9d9;
+    font-size: 13px;
+}
+
+.wallet-icon {
+    font-size: 25px;
+}
+
+.wallet-card h1 {
+    font-size: clamp(32px, 9vw, 43px);
+    color: #20ffa5;
+    margin: 20px 0 5px;
+    text-shadow: 0 0 15px rgba(0,255,153,.5);
+    overflow-wrap: anywhere;
+}
+
+.wallet-card p {
+    color: #b5d9c9;
+    font-size: 12px;
+    margin: 0;
+}
+
+.section-title {
+    font-size: 17px;
+    margin: 25px 0 15px;
+}
+
+.play-card {
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    padding: 22px 15px;
+    border-radius: 17px;
+    background: linear-gradient(135deg, #16ef9c, #00b976);
+    color: #032c1d;
+    font-size: 20px;
+    font-weight: 900;
+    box-shadow: 0 0 22px rgba(0,255,153,.25);
+    margin-bottom: 22px;
+}
+
+.play-card span {
+    display: block;
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 115px;
+    padding: 15px 8px;
+    border-radius: 16px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    background: rgba(7, 48, 35, .9);
+    border: 1px solid #087c51;
+    box-shadow: 0 0 12px rgba(0,255,153,.08);
+    transition: .2s;
+}
+
+.action-card:active {
+    transform: scale(.96);
+    border-color: #20ffa5;
+}
+
+.action-card span {
+    font-size: 29px;
+    margin-bottom: 10px;
+}
+
+.action-card strong {
+    font-size: 14px;
+}
+
+.referral-card {
+    border-color: #16d991;
+    background: linear-gradient(135deg, #07583d, #073021);
+}
+
+.logout-button {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    padding: 16px;
+    border: 1px solid #b94b4b;
+    border-radius: 13px;
+    color: #ffb0b0;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.dash-footer {
+    text-align: center;
+    color: #638b78;
+    font-size: 11px;
+    margin-top: 25px;
+}
+
+@media(max-width: 360px) {
+    .dash-container {
+        padding: 18px 12px;
+    }
+
+    .action-card {
+        min-height: 100px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="dash-container">
+
+    <header class="dash-header">
+        <div class="dash-logo">PLAY<span>WHOT</span> 🎴</div>
+        <div class="dash-tag">● ONLINE</div>
+    </header>
+
+    <section class="welcome-text">
+        <small>PLAYER DASHBOARD</small>
+        <h2>Welcome back, {{ user.username }} 👋</h2>
+        <p>Ready for another exciting Whot experience?</p>
+    </section>
+
+    <section class="wallet-card">
+        <div class="wallet-top">
+            <span>💰 YOUR GAME BALANCE</span>
+            <span class="wallet-icon">👛</span>
+        </div>
+
+        <h1>₦{{ user.balance }}</h1>
+        <p>Your current account balance</p>
+    </section>
+
+    <a href="/game" class="play-card">
+        <span>🎴</span>
+        PLAY WHOT
+    </a>
+
+    <h3 class="section-title">⚡ QUICK ACTIONS</h3>
+
+    <section class="action-grid">
+
+        <a href="/deposit" class="action-card">
+            <span>💳</span>
+            <strong>DEPOSIT</strong>
+        </a>
+
+        <a href="/withdraw" class="action-card">
+            <span>💸</span>
+            <strong>WITHDRAW</strong>
+        </a>
+
+        <a href="/history" class="action-card">
+            <span>📜</span>
+            <strong>HISTORY</strong>
+        </a>
+
+        <a href="/referrals" class="action-card referral-card">
+            <span>👥</span>
+            <strong>REFER & EARN 35%</strong>
+        </a>
+
+    </section>
+
+    <a href="/logout" class="logout-button">🚪 LOG OUT</a>
+
+    <footer class="dash-footer">
+        PLAYWHOT © 2026<br>
+        PLAY SMART. PLAY BOLD.
+    </footer>
+
+</main>
+
+</body>
+</html>

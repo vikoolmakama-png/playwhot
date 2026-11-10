@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transaction History | PLAYWHOT</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: radial-gradient(circle at top, #075038, #03130e 75%);
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 460px;
+    margin: auto;
+    padding: 20px 15px 35px;
+}
+
+.logo {
+    text-align: center;
+    font-size: 25px;
+    font-weight: 900;
+    text-shadow: 0 0 15px #00ff99;
+}
+
+.logo span { color: #20ffa5; }
+
+h1 {
+    text-align: center;
+    font-size: 26px;
+    margin: 18px 0 22px;
+}
+
+.section-title {
+    color: #20ffa5;
+    font-size: 17px;
+    margin: 25px 0 12px;
+}
+
+.transaction {
+    background: #082b20;
+    border: 1px solid #087c51;
+    border-radius: 13px;
+    padding: 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 0 12px #00ff9910;
+}
+
+.transaction-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+}
+
+.transaction strong {
+    font-size: 15px;
+}
+
+.amount {
+    color: #20ffa5;
+    font-size: 19px;
+    font-weight: bold;
+    margin: 12px 0;
+    overflow-wrap: anywhere;
+}
+
+.details {
+    color: #b5d9c9;
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.pending {
+    color: #ffe08a;
+    background: #665018;
+}
+
+.approved {
+    color: #7affb9;
+    background: #075a37;
+}
+
+.rejected {
+    color: #ffaaaa;
+    background: #642929;
+}
+
+.empty {
+    text-align: center;
+    padding: 22px 12px;
+    border: 1px dashed #16865c;
+    border-radius: 12px;
+    color: #a9cabb;
+    font-size: 13px;
+}
+
+.back {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    background: linear-gradient(90deg, #08d98b, #20ffa5);
+    color: #03271b;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 11px;
+    margin-top: 25px;
+}
+</style>
+</head>
+
+<body>
+<main class="container">
+
+    <div class="logo">PLAY<span>WHOT</span> 🎴</div>
+
+    <h1>📜 TRANSACTION HISTORY</h1>
+
+    <h2 class="section-title">💳 DEPOSIT HISTORY</h2>
+
+    {% if deposits %}
+        {% for item in deposits %}
+        <div class="transaction">
+            <div class="transaction-top">
+                <strong>Deposit #{{ item.id }}</strong>
+                <span class="status {{ item.status|lower if item.status|lower in ['pending', 'approved', 'rejected'] else 'pending' }}">
+                    {{ item.status }}
+                </span>
+            </div>
+
+            <div class="amount">+₦{{ "{:,}".format(item.amount) }}</div>
+
+            <div class="details">
+                Sender: {{ item.sender_name }}<br>
+                Date: {{ item.created_at.strftime('%d %b %Y, %I:%M %p') if item.created_at else 'Date unavailable' }}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty">No deposits yet.</div>
+    {% endif %}
+
+
+    <h2 class="section-title">💸 WITHDRAWAL HISTORY</h2>
+
+    {% if withdrawals %}
+        {% for item in withdrawals %}
+        <div class="transaction">
+            <div class="transaction-top">
+                <strong>Withdrawal #{{ item.id }}</strong>
+                <span class="status {{ item.status|lower if item.status|lower in ['pending', 'approved', 'rejected'] else 'pending' }}">
+                    {{ item.status }}
+                </span>
+            </div>
+
+            <div class="amount">-₦{{ "{:,}".format(item.amount) }}</div>
+
+            <div class="details">
+                Bank: {{ item.bank_name }}<br>
+                Account Name: {{ item.account_name }}<br>
+                Account Number: {{ item.account_number }}<br>
+                Date: {{ item.created_at.strftime('%d %b %Y, %I:%M %p') if item.created_at else 'Date unavailable' }}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty">No withdrawals yet.</div>
+    {% endif %}
+
+    <a href="/dashboard" class="back">← BACK TO DASHBOARD</a>
+
+</main>
+</body>
+</html>

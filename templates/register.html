@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="/static/style.css">
+<title>Join PLAYWHOT</title>
+</head>
+<body>
+<div class="hero register-page">
+
+<div class="logo">PLAY<span>WHOT</span> 🎴</div>
+
+<h1>JOIN THE <span>GAME!</span></h1>
+
+<p>Create your account and receive your ₦70 welcome bonus.</p>
+
+<form method="POST">
+<input name="fullname" placeholder="Enter Your Full Name" required>
+
+<input name="username" placeholder="Choose Username" required>
+
+<input name="email" type="email" placeholder="Email Address" required>
+
+<input name="password" type="password"
+placeholder="Create Password (8 characters minimum)" required>
+
+<input name="referral_code" placeholder="Referral Code (Optional)" value="{{ referral_code|default(request.args.get('ref', '')) }}">
+
+<button class="btn" type="submit">CREATE MY ACCOUNT</button>
+
+</form>
+
+{% for message in get_flashed_messages() %}
+<p>{{ message }}</p>
+{% endfor %}
+
+<a href="/login" class="btn secondary">ALREADY HAVE AN ACCOUNT? LOGIN</a>
+
+</div>
+</body>
+</html>

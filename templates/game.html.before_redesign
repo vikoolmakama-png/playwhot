@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PLAYWHOT TABLE</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:12px 8px 25px;
+ font-family:Arial,sans-serif;color:white;
+ background:#063c20;
+}
+.container{max-width:650px;margin:auto}
+h1{text-align:center;color:#ffe36b;text-shadow:0 0 12px #ffcc00}
+.small{font-size:12px;color:#c6e7d0}
+.cardbox{
+ background:#07552b;border:2px solid #168849;
+ border-radius:18px;padding:14px;margin:12px 0;
+}
+.credit{text-align:center;font-size:27px;font-weight:bold;color:#ffe36b}
+.table{
+ background:
+ repeating-linear-gradient(45deg,rgba(0,0,0,.08) 0 35px,transparent 35px 70px),
+ radial-gradient(ellipse,#168b45,#07552b 75%);
+ border:8px solid #59391b;border-radius:25px;
+ padding:15px 9px;box-shadow:inset 0 0 25px #002b13,0 5px 15px #001c0d;
+}
+.opponent{text-align:center;min-height:105px}
+.opponent-cards{display:flex;justify-content:center;gap:5px;flex-wrap:wrap}
+.back-card{
+ width:43px;height:65px;border:3px solid #b5e8df;
+ border-radius:7px;background:repeating-linear-gradient(45deg,#087e91 0 5px,#13a2a4 5px 10px);
+ box-shadow:0 2px 5px #002b13;
+ display:flex;align-items:center;justify-content:center;
+ color:white;font-weight:bold;font-size:9px;text-align:center;
+}
+.middle{
+ display:flex;align-items:center;justify-content:space-around;
+ gap:8px;min-height:155px;padding:12px 0;
+}
+.pile{text-align:center;min-width:75px}
+.pile-label{font-size:10px;color:#d5f1dc;margin-bottom:8px}
+.deck{
+ width:65px;height:95px;border:3px solid #c8eee4;border-radius:9px;
+ background:repeating-linear-gradient(45deg,#087e91 0 6px,#13a2a4 6px 12px);
+ display:flex;align-items:center;justify-content:center;
+ font-size:12px;font-weight:bold;
+}
+.playing-card{
+ width:69px;height:100px;border:3px solid #e8c75b;
+ border-radius:9px;background:#fffdf0;color:#b52323;
+ box-shadow:0 3px 8px #00220e;
+ position:relative;padding:5px;font-weight:bold;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.playing-card strong{font-size:31px}
+.playing-card .shape{font-size:13px}
+.top-card{width:78px;height:112px}
+.red{color:#c52222}
+.black{color:#151515}
+.green{color:#087c43}
+.blue{color:#1262a0}
+.hand{
+ display:flex;
+ justify-content:flex-start;
+ align-items:flex-start;
+ gap:7px;
+ flex-wrap:nowrap;
+ width:100%;
+ max-width:100%;
+ min-width:0;
+ box-sizing:border-box;
+ overflow-x:auto;
+ overflow-y:hidden;
+ padding:10px 8px 18px;
+ scroll-behavior:smooth;
+ -webkit-overflow-scrolling:touch;
+}
+.hand form{
+ flex:0 0 auto;
+ margin:0;
+ text-align:center;
+}
+.hand .playing-card{
+ flex:0 0 61px;
+ width:61px;
+ height:91px;
+}
+.hand form{flex:0 0 auto;margin:0;text-align:center}
+.hand .playing-card{width:61px;height:91px;cursor:pointer}
+.hand .playing-card strong{font-size:27px}
+.hand .playing-card .shape{font-size:10px}
+.hand select{
+ width:65px;font-size:9px;margin-bottom:4px;
+ background:#063c20;color:white;border:1px solid #ffe36b;
+}
+button,.button{
+ border:0;border-radius:10px;padding:13px 15px;
+ background:linear-gradient(#ffe985,#e8b92c);
+ color:#352400;font-weight:bold;font-size:14px;cursor:pointer;
+}
+button:active{transform:scale(.96)}
+.actions{display:flex;gap:8px;margin-top:12px}
+.actions form{flex:1}
+.actions button{width:100%}
+.stakes{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stakes form{margin:0}
+.stakes button{width:100%;min-height:65px}
+.message{color:#ffe36b;font-weight:bold}
+.back{display:block;text-align:center;color:#ffe36b;margin:20px}
+@media(max-width:360px){
+ .hand .playing-card{width:55px;height:84px}
+ .back-card{width:36px;height:57px}
+ .table{padding:10px 5px}
+}
+
+/* Clear symbol cards */
+.playing-card .shape{font-size:25px!important;line-height:1.1}
+.hand .playing-card .shape{font-size:21px!important}
+.hand form{transition:transform .15s}
+.hand form:active{transform:translateY(-5px)}
+#game-area{transition:opacity .12s}
+#game-area.busy{opacity:.65;pointer-events:none}
+
+.win-screen {
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  margin:22px 0;
+  padding:35px 18px;
+  border:2px solid #ffda55;
+  border-radius:25px;
+  background:radial-gradient(ellipse at top,#176b3d 0%,#07351f 55%,#031b11 100%);
+  box-shadow:0 0 25px #f5c84266,inset 0 0 35px #e8b83222;
+  color:#fff;
+}
+.win-trophy {
+  font-size:100px;
+  margin:12px 0;
+  animation:trophyBounce 1.5s infinite ease-in-out;
+  filter:drop-shadow(0 0 18px #ffdc51);
+}
+.win-tag {
+  color:#ffe58a;
+  font-weight:bold;
+  letter-spacing:4px;
+  font-size:13px;
+}
+.win-screen h1 {
+  color:#ffe477;
+  font-size:27px;
+  text-shadow:0 0 15px #ffca28;
+  margin:12px 0;
+}
+.win-screen h2 {
+  color:#fff;
+  font-size:25px;
+  margin:12px 0;
+}
+.win-subtitle {color:#d5f5df;}
+.win-prize {
+  margin:25px auto;
+  padding:20px 10px;
+  max-width:300px;
+  border:2px solid #ffdf67;
+  border-radius:18px;
+  background:linear-gradient(135deg,#fce98d,#e8ac20);
+  color:#382500;
+  box-shadow:0 0 22px #ffd84d88;
+}
+.win-prize span {
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+.win-prize strong {
+  display:block;
+  font-size:42px;
+  margin-top:8px;
+}
+.win-message {color:#ffe99b;font-weight:bold;}
+.win-stars {font-size:25px;margin-top:20px;}
+.confetti {
+  color:#ffdf65;
+  font-size:24px;
+  animation:confettiMove 3s infinite linear;
+}
+.lose-screen {
+  text-align:center;
+  margin:20px 0;
+  padding:30px 15px;
+  border-radius:20px;
+  background:linear-gradient(145deg,#263b32,#10251b);
+  border:1px solid #74917d;
+  color:white;
+}
+@keyframes trophyBounce {
+  0%,100% {transform:translateY(0) scale(1);}
+  50% {transform:translateY(-12px) scale(1.08);}
+}
+@keyframes confettiMove {
+  0% {transform:translateY(-8px);}
+  50% {transform:translateY(12px);}
+  100% {transform:translateY(-8px);}
+}
+\n</style>
+</head>
+<body>
+<div class="container" id="game-area">
+<h1>🎴 PLAYWHOT</h1>
+<p class="small" style="text-align:center">WHOT CARD TABLE • DEMO GAME</p>
+
+<div class="cardbox">
+<div class="small">YOUR GAME CREDITS</div>
+<div class="credit">₦{{ credits }}</div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="cardbox message">{{ messages[-1] }}</div>
+{% endif %}
+{% endwith %}
+
+{% if not game %}
+<div class="cardbox">
+<h3>CHOOSE YOUR STAKE</h3>
+<p class="small">Your PLAYWHOT balance is used for every game.</p>
+<div class="stakes">
+{% for stake, prize in stakes.items() %}
+<form method="POST" action="/game/start">
+<button type="submit" name="stake" value="{{ stake }}">
+STAKE ₦{{ stake }}<br>WIN ₦{{ prize }}
+</button>
+</form>
+{% endfor %}
+</div>
+</div>
+{% else %}
+<div class="cardbox">
+<strong>OPPONENT: {{ game.bot_name }}</strong>
+<p class="small">Computer-controlled opponent</p>
+<p>Stake: ₦{{ game.stake }} | Prize: ₦{{ game.prize }}</p>
+<p class="message">{{ game.message }}</p>
+</div>
+
+<div class="table">
+<div class="opponent">
+<p class="small">OPPONENT'S HAND ({{ game.bot|length }})</p>
+<div class="opponent-cards">
+{% for card in game.bot %}
+<div class="back-card">⭐</div>
+{% endfor %}
+</div>
+</div>
+
+<div class="middle">
+<div class="pile">
+<div class="pile-label">PICK PILE</div>
+<form method="POST" action="/game/draw">
+<button class="deck" type="submit" {% if game.finished %}disabled{% endif %}>⭐</button>
+</form>
+</div>
+
+<div class="pile">
+<div class="pile-label">CARD ON TABLE</div>
+<div class="playing-card top-card">
+{% if game.discard[-1].shape == "WHOT" %}
+<span class="shape">⭐</span>
+<strong>20</strong>
+{% else %}
+<span class="shape">{{ {"CIRCLE":"●","TRIANGLE":"▲","CROSS":"✚","SQUARE":"■","WHOT":"⭐"}[game.discard[-1].shape] }}</span>
+<strong>{{ game.discard[-1].number }}</strong>
+{% endif %}
+</div>
+</div>
+</div>
+
+<p style="text-align:center;color:#ffe36b;font-weight:bold">
+ACTIVE SHAPE: {{ {"CIRCLE":"●","TRIANGLE":"▲","CROSS":"✚","SQUARE":"■"}[game.active_shape] }}
+</p>
+<p class="small" style="text-align:center">YOUR HAND ({{ game.player|length }} CARDS)</p>
+<div class="hand">
+{% for card in game.player %}
+<form method="POST" action="/game/play">
+<input type="hidden" name="card_index" value="{{ loop.index0 }}">
+{% if card.shape == "WHOT" %}
+<select name="shape" aria-label="Choose shape">
+{% for shape in ["CIRCLE","TRIANGLE","CROSS","SQUARE"] %}
+<option value="{{ shape }}">{{ {"CIRCLE":"●","TRIANGLE":"▲","CROSS":"✚","SQUARE":"■"}[shape] }}</option>
+{% endfor %}
+</select>
+{% endif %}
+<button class="playing-card" type="submit" {% if game.finished %}disabled{% endif %}>
+<span class="shape">{{ {"CIRCLE":"●","TRIANGLE":"▲","CROSS":"✚","SQUARE":"■","WHOT":"⭐"}[card.shape] }}</span>
+<strong>{% if card.shape == "WHOT" %}20{% else %}{{ card.number }}{% endif %}</strong>
+</button>
+</form>
+{% endfor %}
+</div>
+</div>
+
+{% if game.finished == "won" %}
+<div class="win-screen">
+  <div class="confetti">✦　✧　★　✦　✧　★　✦</div>
+  <div class="win-trophy">🏆</div>
+  <div class="win-tag">PLAYWHOT CHAMPION</div>
+  <h1>CONGRATULATIONS!</h1>
+  <h2>🎉 YOU WON! 🎉</h2>
+  <p class="win-subtitle">Amazing! You defeated your opponent!</p>
+  <div class="win-prize">
+    <span>YOUR WINNINGS</span>
+    <strong>₦{{ game.prize }}</strong>
+  </div>
+  <p class="win-message">Your prize has been added to your balance.</p>
+  <div class="win-stars">⭐ ✨ ⭐ ✨ ⭐</div>
+</div>
+{% elif game.finished %}
+<div class="lose-screen">
+  <div style="font-size:65px">😔</div>
+  <h2>ROUND OVER</h2>
+  <p>Your opponent won this round. Better luck next time!</p>
+</div>
+{% endif %}
+
+<div class="actions">
+<form method="POST" action="/game/leave">
+<button type="submit">BACK TO STAKES</button>
+</form>
+</div>
+{% endif %}
+
+<a class="back" href="/dashboard">← Back to dashboard</a>
+</div>
+
+<script>
+(function(){
+  let requestInProgress = false;
+
+  document.addEventListener("submit", async function(event){
+    const form = event.target;
+    const area = document.getElementById("game-area");
+
+    if (!area || !area.contains(form)) return;
+
+    const action = form.getAttribute("action") || "";
+    if (!action.startsWith("/game/")) return;
+
+    event.preventDefault();
+
+    if (requestInProgress) return;
+    requestInProgress = true;
+    area.classList.add("busy");
+
+    try {
+      const response = await fetch(action, {
+        method: "POST",
+        body: (function(){
+          const data = new FormData(form);
+          const button = event.submitter;
+          if (button && button.name) {
+            data.append(button.name, button.value);
+          }
+          return data;
+        })(),
+        headers: {"X-Requested-With": "XMLHttpRequest"}
+      });
+
+      if (response.redirected) {
+        window.location.href = response.url;
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Game request failed: " + response.status);
+      }
+
+      const data = await response.json();
+
+      if (!data.html) {
+        throw new Error("The server did not return the updated game.");
+      }
+
+      const parsed = new DOMParser().parseFromString(data.html, "text/html");
+      const updated = parsed.getElementById("game-area");
+      const currentArea = document.getElementById("game-area");
+
+      if (!updated || !currentArea) {
+        throw new Error("Updated game area was not found.");
+      }
+
+      currentArea.replaceWith(updated);
+
+    } catch(error) {
+      console.error(error);
+      const currentArea = document.getElementById("game-area");
+      if (currentArea) {
+        let notice = currentArea.querySelector(".ajax-error");
+        if (!notice) {
+          notice = document.createElement("p");
+          notice.className = "ajax-error";
+          currentArea.prepend(notice);
+        }
+        notice.textContent = "Could not update the game. Please try again.";
+      }
+    } finally {
+      requestInProgress = false;
+      const currentArea = document.getElementById("game-area");
+      if (currentArea) currentArea.classList.remove("busy");
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

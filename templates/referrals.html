@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PLAYWHOT | Referrals</title>
+<link rel="stylesheet" href="/static/style.css">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:linear-gradient(145deg,#031a12,#06452e);
+ color:#f5fff9;
+ font-family:Arial,sans-serif;
+}
+.ref-page{
+ width:100%;
+ max-width:480px;
+ margin:auto;
+ padding:24px 16px 35px;
+}
+.heading{
+ text-align:center;
+ font-size:27px!important;
+ line-height:1.2;
+ margin:12px 0 25px;
+ font-weight:800;
+}
+.heading span{color:#12e99a}
+.panel{
+ background:#092d22;
+ border:1px solid #168d63;
+ border-radius:17px;
+ padding:20px 16px;
+ margin-bottom:16px;
+ text-align:center;
+ box-shadow:0 5px 18px #0003;
+}
+.label{
+ font-size:13px;
+ color:#b9dccc;
+ letter-spacing:1px;
+ margin:0 0 12px;
+}
+.code{
+ font-size:clamp(25px,7vw,34px)!important;
+ line-height:1.2;
+ letter-spacing:2px;
+ color:#25efa5;
+ margin:8px 0 17px;
+ overflow-wrap:anywhere;
+}
+.section-title{
+ font-size:19px!important;
+ line-height:1.3;
+ margin:0 0 12px;
+ color:#eafff4;
+}
+.description{
+ font-size:14px;
+ line-height:1.5;
+ color:#c3ddcf;
+ margin:8px 0 15px;
+}
+.link-box{
+ background:#031b13;
+ border:1px solid #247e5c;
+ border-radius:10px;
+ padding:12px;
+ color:#8fffc9;
+ font-size:13px;
+ line-height:1.5;
+ overflow-wrap:anywhere;
+ text-align:left;
+}
+.btn{
+ display:block;
+ width:100%;
+ min-height:45px;
+ border:0;
+ border-radius:10px;
+ padding:12px;
+ margin-top:11px;
+ background:#13df91;
+ color:#032719;
+ font-size:14px;
+ font-weight:bold;
+ text-decoration:none;
+ cursor:pointer;
+}
+.btn.secondary{
+ background:#174c38;
+ color:white;
+ border:1px solid #287e5d;
+}
+.commission{
+ font-size:38px!important;
+ color:#20eda0;
+ margin:5px 0;
+}
+.member{
+ text-align:left;
+ padding:12px;
+ background:#0d3a2b;
+ border-radius:10px;
+ margin-top:9px;
+ font-size:14px;
+}
+.empty{font-size:14px;color:#c3ddcf}
+.back{margin-top:5px}
+</style>
+</head>
+<body>
+<main class="ref-page">
+
+<h1 class="heading">INVITE & <span>EARN!</span></h1>
+
+<section class="panel">
+ <p class="label">YOUR REFERRAL CODE</p>
+ <div class="code">{{ user.referral_code }}</div>
+ <button class="btn" type="button"
+ onclick="copyValue('{{ user.referral_code }}','Referral code copied!')">
+ COPY CODE
+ </button>
+</section>
+
+<section class="panel">
+ <h2 class="section-title">YOUR REGISTRATION LINK</h2>
+ <p class="description">Share this link with friends to invite them to PLAYWHOT.</p>
+
+ <div class="link-box" id="referralLink">{{ referral_link }}</div>
+
+ <button class="btn" type="button" onclick="copyValue(document.getElementById('referralLink').textContent.trim(),'Registration link copied!')">
+ COPY REGISTRATION LINK
+ </button>
+
+ <button class="btn secondary" type="button" onclick="shareReferral()">
+ SHARE INVITATION
+ </button>
+</section>
+
+<section class="panel">
+ <p class="label">YOUR COMMISSION</p>
+ <h2 class="commission">35%</h2>
+ <p class="description">On the first 5 approved deposits of each person you invite.</p>
+</section>
+
+<section class="panel">
+ <h2 class="section-title">YOUR INVITATIONS ({{ invited|length }})</h2>
+ {% for person in invited %}
+ <div class="member">{{ person.username }} — Joined PLAYWHOT</div>
+ {% else %}
+ <p class="empty">You haven't invited anyone yet. Share your link to get started!</p>
+ {% endfor %}
+</section>
+
+<a href="/dashboard" class="btn secondary back">BACK TO DASHBOARD</a>
+
+</main>
+
+<script>
+async function copyValue(value,message){
+ try{
+  await navigator.clipboard.writeText(value);
+ }catch(e){
+  const box=document.createElement("textarea");
+  box.value=value;
+  document.body.appendChild(box);
+  box.select();
+  document.execCommand("copy");
+  box.remove();
+ }
+ alert(message);
+}
+function shareReferral(){
+ const link=document.getElementById("referralLink").textContent.trim();
+ if(navigator.share){
+  navigator.share({
+   title:"Join PLAYWHOT",
+   text:"Join PLAYWHOT using my invitation link:",
+   url:link
+  }).catch(()=>{});
+ }else{
+  copyValue(link,"Link copied. Share it with your friends!");
+ }
+}
+</script>
+</body>
+</html>
