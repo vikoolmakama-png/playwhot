@@ -251,7 +251,6 @@ def player_play(game, index, selected_shape=None):
 
     else:
         game["extra_turn"] = False
-        bot_move(game)
 
     if not game["bot"]:
         return True, "LOSE"

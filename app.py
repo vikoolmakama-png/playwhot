@@ -334,7 +334,7 @@ def game_ajax_response():
             credits=user.balance if user else 0,
             game=session.get("whot_game")
         )
-        return jsonify({"html": html})
+        return jsonify({"html": html, "ai_pending": bool((session.get("whot_game") or {}).get("ai_pending"))})
     return redirect("/game")
 
 
@@ -382,19 +382,27 @@ def start_whot():
 def play_whot():
     if "user_id" not in session:
         return redirect("/login")
+
     user = db.session.get(User, session["user_id"])
     game = session.get("whot_game")
+
     if not user or not game or game.get("finished"):
         return game_ajax_response()
+
     try:
         index = int(request.form.get("card_index", -1))
     except (ValueError, TypeError):
         index = -1
+
     valid, result = player_play(game, index, request.form.get("shape", ""))
+
     if not valid:
         flash(result)
         session["whot_game"] = game
         return game_ajax_response()
+
+    game["ai_pending"] = False
+
     if result == "WIN":
         user.balance += game["prize"]
         game["message"] = "YOU WON! Winnings added: ₦" + str(game["prize"])
@@ -402,9 +410,36 @@ def play_whot():
     elif result == "LOSE":
         game["message"] = "Your opponent won this round."
         game["finished"] = "lost"
+    elif not game.get("extra_turn"):
+        game["ai_pending"] = True
+
     session["whot_game"] = game
     session.modified = True
     db.session.commit()
+    return game_ajax_response()
+
+
+@app.route("/game/ai", methods=["POST"])
+def ai_whot():
+    if "user_id" not in session:
+        return redirect("/login")
+
+    from game_engine import bot_move
+    game = session.get("whot_game")
+
+    if not game or game.get("finished") or not game.get("ai_pending"):
+        return game_ajax_response()
+
+    time.sleep(0.80)
+    bot_move(game)
+    game["ai_pending"] = False
+
+    if not game["bot"]:
+        game["finished"] = "lost"
+        game["message"] = "Your opponent won this round."
+
+    session["whot_game"] = game
+    session.modified = True
     return game_ajax_response()
 
 
@@ -413,22 +448,16 @@ def draw_whot():
     if "user_id" not in session:
         return redirect("/login")
 
-    from game_engine import draw_cards, bot_move
-
+    from game_engine import draw_cards
     game = session.get("whot_game")
+
     if not game or game.get("finished"):
         return game_ajax_response()
 
     draw_cards(game, game["player"], 1)
     game["extra_turn"] = False
+    game["ai_pending"] = True
     game["message"] = "You picked a card. Your opponent's turn."
-
-    time.sleep(0.85)
-    bot_move(game)
-
-    if not game["bot"]:
-        game["finished"] = "lost"
-        game["message"] = "Your opponent won this round."
 
     session["whot_game"] = game
     session.modified = True

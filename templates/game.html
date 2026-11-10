@@ -385,6 +385,33 @@ ACTIVE SHAPE: {{ {"CIRCLE":"●","TRIANGLE":"▲","CROSS":"✚","SQUARE":"■"}[
 (function(){
   let requestInProgress = false;
 
+  async function sendGameRequest(action, formData) {
+    const response = await fetch(action, {
+      method: "POST",
+      body: formData,
+      headers: {"X-Requested-With": "XMLHttpRequest"}
+    });
+
+    if (response.redirected) {
+      window.location.href = response.url;
+      return null;
+    }
+
+    if (!response.ok) throw new Error("Game request failed.");
+
+    const data = await response.json();
+    if (!data.html) throw new Error("Missing game update.");
+
+    const parsed = new DOMParser().parseFromString(data.html, "text/html");
+    const updated = parsed.getElementById("game-area");
+    const current = document.getElementById("game-area");
+
+    if (!updated || !current) throw new Error("Game area not found.");
+
+    current.replaceWith(updated);
+    return data;
+  }
+
   document.addEventListener("submit", async function(event){
     const form = event.target;
     const area = document.getElementById("game-area");
@@ -395,66 +422,42 @@ ACTIVE SHAPE: {{ {"CIRCLE":"●","TRIANGLE":"▲","CROSS":"✚","SQUARE":"■"}[
     if (!action.startsWith("/game/")) return;
 
     event.preventDefault();
-
     if (requestInProgress) return;
+
     requestInProgress = true;
     area.classList.add("busy");
 
     try {
-      const response = await fetch(action, {
-        method: "POST",
-        body: (function(){
-          const data = new FormData(form);
-          const button = event.submitter;
-          if (button && button.name) {
-            data.append(button.name, button.value);
-          }
-          return data;
-        })(),
-        headers: {"X-Requested-With": "XMLHttpRequest"}
-      });
+      const data = new FormData(form);
+      const button = event.submitter;
+      if (button && button.name) data.append(button.name, button.value);
 
-      if (response.redirected) {
-        window.location.href = response.url;
-        return;
+      if (action === "/game/draw") {
+        await new Promise(resolve => setTimeout(resolve, 200));
       }
 
-      if (!response.ok) {
-        throw new Error("Game request failed: " + response.status);
+      const result = await sendGameRequest(action, data);
+
+      if (result && result.ai_pending) {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        await sendGameRequest("/game/ai", new FormData());
       }
-
-      const data = await response.json();
-
-      if (!data.html) {
-        throw new Error("The server did not return the updated game.");
-      }
-
-      const parsed = new DOMParser().parseFromString(data.html, "text/html");
-      const updated = parsed.getElementById("game-area");
-      const currentArea = document.getElementById("game-area");
-
-      if (!updated || !currentArea) {
-        throw new Error("Updated game area was not found.");
-      }
-
-      currentArea.replaceWith(updated);
-
     } catch(error) {
       console.error(error);
-      const currentArea = document.getElementById("game-area");
-      if (currentArea) {
-        let notice = currentArea.querySelector(".ajax-error");
+      const current = document.getElementById("game-area");
+      if (current) {
+        let notice = current.querySelector(".ajax-error");
         if (!notice) {
           notice = document.createElement("p");
           notice.className = "ajax-error";
-          currentArea.prepend(notice);
+          current.prepend(notice);
         }
         notice.textContent = "Could not update the game. Please try again.";
       }
     } finally {
       requestInProgress = false;
-      const currentArea = document.getElementById("game-area");
-      if (currentArea) currentArea.classList.remove("busy");
+      const current = document.getElementById("game-area");
+      if (current) current.classList.remove("busy");
     }
   });
 })();
