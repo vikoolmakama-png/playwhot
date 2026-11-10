@@ -32,6 +32,18 @@ class User(db.Model):
     referral_code = db.Column(db.String(20), unique=True)
     referred_by_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_banned = db.Column(db.Boolean, nullable=False, default=False)
+
+
+@app.before_request
+def enforce_user_ban():
+    user_id = session.get("user_id")
+    if user_id:
+        user = db.session.get(User, user_id)
+        if not user or user.is_banned:
+            session.clear()
+            flash("Your account is banned or unavailable.")
+            return redirect("/login")
 
 
 class Deposit(db.Model):
@@ -143,7 +155,9 @@ def login():
 
         user = User.query.filter_by(username=username).first()
 
-        if user and check_password_hash(user.password, password):
+        if user and user.is_banned:
+            flash("Your account has been banned. Contact the administrator.")
+        elif user and check_password_hash(user.password, password):
             session["user_id"] = user.id
             return redirect("/dashboard")
 
@@ -714,7 +728,17 @@ footer{text-align:center;color:#607969;font-size:11px;padding:20px}
     {% for u in users %}
     <div class="item user-row">
       <div><h3>{{ u.fullname }}</h3><p>@{{ u.username }}</p></div>
-      <div class="amount">₦{{ "{:,}".format(u.balance or 0) }}</div>
+      <div style="text-align:right">
+        <div class="amount">₦{{ "{:,}".format(u.balance or 0) }}</div>
+        <p style="color:{{ '#ff5555' if u.is_banned else '#00ff88' }}">
+          {{ "BANNED" if u.is_banned else "ACTIVE" }}
+        </p>
+        <form method="POST" action="/admin/user/{{ u.id }}/{{ 'unban' if u.is_banned else 'ban' }}">
+          <button type="submit" style="padding:9px 14px;border:0;border-radius:8px;cursor:pointer;background:{{ '#00cc77' if u.is_banned else '#b83232' }};color:white;font-weight:bold">
+            {{ "UNBAN" if u.is_banned else "BAN USER" }}
+          </button>
+        </form>
+      </div>
     </div>
     {% else %}
     <div class="empty">No registered users yet.</div>
@@ -798,6 +822,26 @@ def admin_withdrawal_action(withdrawal_id, action):
     return redirect("/admin/dashboard")
 
 
+
+@app.route("/admin/user/<int:user_id>/<action>", methods=["POST"])
+def admin_user_action(user_id, action):
+    if not session.get("admin_logged_in"):
+        return redirect("/admin")
+
+    if action not in ("ban", "unban"):
+        return redirect("/admin/dashboard")
+
+    user = db.session.get(User, user_id)
+    if user:
+        user.is_banned = (action == "ban")
+        db.session.commit()
+        flash(f"User @{user.username} has been {action}ned.")
+    else:
+        flash("User not found.")
+
+    return redirect("/admin/dashboard")
+
+
 @app.route("/admin/logout", methods=["POST"])
 def admin_logout():
     session.pop("admin_logged_in", None)
@@ -817,6 +861,10 @@ with app.app_context():
         connection.execute(text(
             'ALTER TABLE "user" ADD COLUMN IF NOT EXISTS '
             'game_balance INTEGER NOT NULL DEFAULT 70'
+        ))
+        connection.execute(text(
+            'ALTER TABLE "user" ADD COLUMN IF NOT EXISTS '
+            'is_banned BOOLEAN NOT NULL DEFAULT FALSE'
         ))
 
 
