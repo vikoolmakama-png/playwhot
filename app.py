@@ -430,7 +430,7 @@ def ai_whot():
     if not game or game.get("finished") or not game.get("ai_pending"):
         return game_ajax_response()
 
-    time.sleep(0.35)
+    time.sleep(0.20)
     bot_move(game)
     game["ai_pending"] = False
 
