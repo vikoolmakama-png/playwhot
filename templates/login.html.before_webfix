@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login | PLAYWHOT</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+<div class="hero login-page">
+
+    <div class="logo">PLAY<span>WHOT</span> 🎴</div>
+
+    <h1>WELCOME <span>BACK!</span></h1>
+
+    <p>♠️ Your next Whot adventure awaits!</p>
+
+    <form method="POST">
+
+        <input
+            name="username"
+            placeholder="Enter Username"
+            required
+        >
+
+        <input
+            name="password"
+            type="password"
+            placeholder="Enter Password"
+            required
+        >
+
+        <button class="btn" type="submit">LOGIN TO ACCOUNT</button>
+
+    </form>
+
+    {% for message in get_flashed_messages() %}
+    <p>{{ message }}</p>
+    {% endfor %}
+
+    <a href="/register" class="btn secondary">
+        CREATE NEW ACCOUNT
+    </a>
+
+</div>
+</body>
+</html>

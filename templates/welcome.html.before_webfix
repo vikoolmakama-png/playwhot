@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLAYWHOT - Play. Win. Enjoy.</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="hero">
+
+    <div class="logo">PLAY<span>WHOT</span> 🎴</div>
+
+    <div class="badge">🇳🇬 NIGERIA'S EXCITING WHOT EXPERIENCE</div>
+
+    <h1>
+        THE GAME IS ON!<br>
+        <span>ARE YOU READY?</span>
+    </h1>
+
+    <p class="intro">
+        Welcome to PLAYWHOT, where strategy meets excitement!
+        Challenge yourself, enjoy the legendary Nigerian Whot
+        card game and compete with other players.
+    </p>
+
+    <div class="bonus">
+        <small>🎁 YOUR WELCOME BONUS</small>
+        <h2>₦70</h2>
+        <p>Start your PLAYWHOT journey with us!</p>
+    </div>
+
+    <div class="features">
+        <div class="feature">
+            <span>🎴</span>
+            <h3>REAL WHOT</h3>
+            <p>Enjoy classic Nigerian Whot gameplay.</p>
+        </div>
+
+        <div class="feature">
+            <span>🏆</span>
+            <h3>COMPETE</h3>
+            <p>Challenge opponents and test your skills.</p>
+        </div>
+
+        <div class="feature">
+            <span>💰</span>
+            <h3>REWARDS</h3>
+            <p>Enjoy eligible rewards and track your progress.</p>
+        </div>
+
+        <div class="feature">
+            <span>🌍</span>
+            <h3>OUR COMMUNITY</h3>
+            <p>👥 <strong>56,000+</strong><br>ACTIVE PLAYERS<br><br>💸 <strong>₦270,000+</strong><br>TOTAL PAYOUTS</p>
+        </div>
+    </div>
+
+    <div class="deposit-info">
+        <h3>💳 MINIMUM DEPOSIT</h3>
+        <h2>₦200</h2>
+        <p>Start playing with a minimum deposit of ₦200.</p>
+    </div>
+
+    <h2 class="tagline">PLAY SMART. PLAY BOLD. PLAYWHOT!</h2>
+
+    <a href="/register" class="btn">🚀 CREATE FREE ACCOUNT</a>
+
+    <a href="/login" class="btn secondary">LOGIN TO YOUR ACCOUNT</a>
+
+    <p class="footer">
+        PLAYWHOT © 2026<br>
+        The excitement never ends!
+    </p>
+
+</div>
+</body>
+</html>
